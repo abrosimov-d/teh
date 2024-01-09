@@ -1,31 +1,47 @@
 import logo from './logo.svg';
 import './App.css';
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import LocationBar  from './components/LocationBar'
-import getLocation from './components/Location'
+import {getLocation, getNearRest, getAllRests} from './components/Location'
 import JournalEditor from './components/JournalEditor';
 import JournalTable from './components/JournalTable';
 
 function App() {
-  let [location, setLocation] = useState('null');
+  let [location, setLocation] = useState({});
   let [date, setDate] = useState(new Date().toLocaleDateString())
   let [journalData, setJournalData] = useState([])
-  function updateLocation() {
-    setLocation(getLocation())
+  let [journalDescription, setJournalDescritpion] = useState('');
+
+  async function fetchLocation() {
+    await getLocation(setLocation)
   }
 
   function onAddClick() {
     let record = {
       'date': date,
-      'location': location.toString(),
-      'description': 'bla'
+      'location': location,
+      'description': journalDescription
     }
     setJournalData([...journalData, record]);  
   }
+
+  useEffect(() => {
+    fetchLocation();
+  }, [])
+
+  function onJournalEditorChange(e) {
+    setJournalDescritpion(e.target.value);
+  }
+
   return (
     <div className="App">
-      <LocationBar location={location} updateLocation={updateLocation}/>
-      <JournalEditor date={date} onAddClick={onAddClick}/>
+
+      <JournalEditor date={date} 
+        journalDescription={journalDescription} 
+        onAddClick={onAddClick} 
+        onChange={onJournalEditorChange} 
+        rests={getAllRests()} 
+        locationTitle={location.title}/>
       <JournalTable data={journalData}/>
     </div>
   );
