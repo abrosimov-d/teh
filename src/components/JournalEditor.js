@@ -8,7 +8,10 @@ export default function JournalEditor(props) {
             })}
         </select>
         <textarea rows="5" className="editor-input" onChange={props.onChange} value={props.journalDescription}></textarea>
-        <button className="editor-ok" onClick={props.onAddClick}>+</button>
+        <div className="editor-buttons">
+            <button className="editor-gen">+</button>
+            <button className="editor-ok" onClick={props.onAddClick}>Добавить в журнал</button>
+        </div>
     </div>
     )
 }
